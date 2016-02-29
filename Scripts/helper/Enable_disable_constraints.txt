@@ -1,0 +1,62 @@
+Enable_disable_constraints.txt
+
+SET Serveroutput ON
+
+/* Disable */
+
+BEGIN
+
+dbms_output.put_line('. Desabilitando FK ');
+
+for i IN (select table_name, constraint_name from user_constraints 
+	where constraint_type ='R'
+	and status = 'ENABLED')
+loop
+	EXECUTE IMMEDIATE 'alter table ' ||i.table_name|| ' disable constraint ' ||i.constraint_name;
+end loop i;
+
+dbms_output.put_line('. Desabilitando Primarias (UK/PK) ');
+
+for i IN (select table_name, constraint_name from user_constraints
+	where status = 'ENABLED')
+loop
+	EXECUTE IMMEDIATE 'alter table ' ||i.table_name|| ' disable constraint ' ||i.constraint_name;
+end loop i;
+
+dbms_output.put_line('. Comprobando si queda alguna ACTIVA');
+select table_name, constraint_name, constraint_type from user_constraints where status ='ENABLED';
+
+END;
+/
+
+
+/* Enable */
+
+BEGIN
+
+dbms_output.put_line('. Habilitando Primarias (UK/PK) ');
+
+for i IN (select table_name, constraint_name from user_constraints
+	where status <> 'ENABLED')
+loop
+	EXECUTE IMMEDIATE 'alter table ' ||i.table_name|| ' enable constraint ' ||i.constraint_name;
+end loop i;
+
+
+
+dbms_output.put_line('. Habilitando FK ');
+
+for i IN (select table_name, constraint_name from user_constraints 
+	where constraint_type ='R'
+	and status <> 'ENABLED')
+loop
+	EXECUTE IMMEDIATE 'alter table ' ||i.table_name|| ' enable constraint ' ||i.constraint_name;
+end loop i;
+
+
+
+dbms_output.put_line('. Comprobando si queda alguna INACTIVA ');
+select table_name, constraint_name, constraint_type from user_constraints where status <> 'ENABLED';
+
+END;
+/
