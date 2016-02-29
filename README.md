@@ -6,6 +6,10 @@
  
 
 ## Scripts
-* Modificar "menu.sh" y adaptar las rutas
+* Modificar "sql.sh" y adaptar las rutas
+
+	SCRIPT_PATH=/datos/Tools/OracleSqlScripts/Scripts
+	SCRIPT_OUTPUT=/tmp/oracle_spool
+
 
  
